@@ -1,5 +1,5 @@
 <template>
-  <div class="project">
+  <div class="project" :class="{ complete: project.complete }">
     <div class="actions">
       <h3 @click="toggleDetails">
         {{ project.title }}
@@ -10,7 +10,7 @@
         <span @click="handleDeleteProject" class="material-icons">
           delete
         </span>
-        <span class="material-icons"> done </span>
+        <span @click="handleComplete" class="material-icons tick"> done </span>
       </div>
     </div>
     <div v-if="showDetails" class="details">
@@ -50,8 +50,20 @@ export default defineComponent({
         })
         .catch((err) => console.log(err));
     };
-    const handleDone = () => {
-      //
+    const handleComplete = () => {
+      const newComplete = !props.project.complete;
+      console.log(`newComplete: ${newComplete}`);
+      fetch(url, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          complete: newComplete,
+        }),
+      })
+        .then(() => {
+          emit("complete", props.project.id);
+        })
+        .catch((err) => console.log(err));
     };
 
     return {
@@ -59,7 +71,7 @@ export default defineComponent({
       toggleDetails,
       handleEditProject,
       handleDeleteProject,
-      handleDone,
+      handleComplete,
     };
   },
 });
@@ -89,5 +101,12 @@ h3 {
 }
 .material-icons:hover {
   color: #777;
+}
+.project.complete {
+  border-left: 4px solid #00ce89;
+}
+
+.project.complete .tick {
+  color: #00ce89;
 }
 </style>
