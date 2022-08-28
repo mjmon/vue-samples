@@ -6,6 +6,7 @@
       </h3>
 
       <div class="icons">
+        
         <span class="material-icons"> edit </span>
         <span @click="handleDeleteProject" class="material-icons">
           delete
